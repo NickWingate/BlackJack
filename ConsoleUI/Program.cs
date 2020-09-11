@@ -1,4 +1,4 @@
-﻿using BlackJackLibrary;
+﻿using BlackJack;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
@@ -9,16 +9,11 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            while (true)
-            {
-                Console.WriteLine("Suit: ");
-                string userSuit = Console.ReadLine();
-                Console.WriteLine("Value: ");
-                string userValue = Console.ReadLine();
-
-                Card test = new Card(userSuit, userValue);
-                Console.WriteLine(test.ToString());
-            }            
+            Deck d1 = new Deck();
+            d1.ShowDeck();
+            Console.WriteLine("\nShuffled:\n\n");
+            d1.ShuffleDeck();
+            d1.ShowDeck();
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BlackJackLibrary
+namespace BlackJack
 {
     class Card
     {
@@ -54,12 +54,17 @@ namespace BlackJackLibrary
             }
         }
 
+        // Constructors
         public Card(string suit, string value)
         {
             this.Suit = suit;
             this.Value = value;
         }
 
+        // Methods
+        /// <summary>
+        /// Returns a string of the card
+        /// </summary>
         public override string ToString()
         {
             return $"{this.Value} of {this.Suit}";
