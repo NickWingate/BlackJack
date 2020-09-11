@@ -51,5 +51,18 @@ namespace BlackJack
                 Cards[r] = temp;
             }
         }
+        public Card DrawCard()
+        {
+            if (Cards.Count > 0)
+            {
+                Card tempCard = Cards[0];
+                Cards.RemoveAt(0);
+                return tempCard;
+            }
+            else
+            {
+                throw new IndexOutOfRangeException("Deck is empty");
+            }
+        }
     }
 }

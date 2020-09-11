@@ -10,10 +10,24 @@ namespace ConsoleUI
         static void Main(string[] args)
         {
             Deck d1 = new Deck();
-            d1.ShowDeck();
-            Console.WriteLine("\nShuffled:\n\n");
             d1.ShuffleDeck();
-            d1.ShowDeck();
+
+            Console.Write("Welcome to blackjack\nPlease enter your name: ");
+            string userName = Console.ReadLine();
+            Player p1 = new Player(userName);
+
+            p1.DrawCards(d1);
+            p1.ViewCards();
+        }
+
+        static void HitOrStand()
+        {
+            Console.WriteLine("Hit or Stand?");
+            string userResponse = Console.ReadLine();
+            if (userResponse == "Hit")
+            {
+
+            }
         }
     }
 }
