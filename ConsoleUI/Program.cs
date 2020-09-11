@@ -1,4 +1,7 @@
-﻿using System;
+﻿using BlackJackLibrary;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 
 namespace ConsoleUI
 {
@@ -6,7 +9,16 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            while (true)
+            {
+                Console.WriteLine("Suit: ");
+                string userSuit = Console.ReadLine();
+                Console.WriteLine("Value: ");
+                string userValue = Console.ReadLine();
+
+                Card test = new Card(userSuit, userValue);
+                Console.WriteLine(test.ToString());
+            }            
         }
     }
 }
