@@ -1,6 +1,8 @@
 ﻿using BlackJack;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace ConsoleUI
@@ -13,14 +15,20 @@ namespace ConsoleUI
             d1.ShuffleDeck();
 
             Player p1 = InitPlayer(d1);
+            p1.ViewCards();
 
-            while (p1.HandValue != -1)
+            while (!p1.Bust && p1.Playing)
             {
-                p1.ViewCards();
+                //p1.ViewCards();
                 Console.WriteLine($"Hand Value: {p1.HandValue}");
                 HitOrStand(p1, d1);
 
             }
+            p1.ViewCards();
+            Console.WriteLine($"{p1.Name}'s Final Hand Value: {p1.HandValue}");
+
+
+            Console.WriteLine("End of game");
         }
 
         /// <summary>
@@ -39,16 +47,29 @@ namespace ConsoleUI
 
         static void HitOrStand(Player p, Deck d)
         {
-            Console.Write("Hit or Stand?: ");
+            Console.Write("(Hit), (Stand), or (View) Cards?: ");
             string choice = Console.ReadLine().ToLower();
-            if (choice == "hit")
+
+            switch (choice)
             {
-                p.Hit(d);
+                case "hit":
+                    p.Hit(d);
+                    break;
+                case "stand":
+                    p.Stand();  // not yet coded
+                    return;
+                case "view":
+                    p.ViewCards();
+                    return;
+                default:
+                    Console.WriteLine("Invalid choice");
+                    break;
             }
-            else if (choice == "stand")
-            {
-                
-            }
+        }
+
+        static Player FindWinner(List<Player> players)
+        {
+            return players.Max();
         }
     }
 }

@@ -11,6 +11,8 @@ namespace ConsoleUI
         private int _handValue = 0;
 
         // Properties
+        public bool Playing { get; set; } = true;
+        public bool Bust { get; set; } = false;
         public string Name { get; set; }
         public List<Card> Hand { get; set; } = new List<Card>();
         public int HandValue
@@ -20,12 +22,10 @@ namespace ConsoleUI
             {
                 if (value > 21)
                 {
-                    _handValue = -1;  // -1 is bust
+                    Bust = true;
+                    Console.WriteLine("Bust! You lose");
                 }
-                else
-                {
-                    _handValue = value;
-                }
+                _handValue = value;
             }
         }
 
@@ -51,12 +51,15 @@ namespace ConsoleUI
         }
         public void Hit(Deck deck)
         {
-            Hand.Add(deck.DrawCard());
+            Card card = deck.DrawCard();
+            Console.WriteLine($"You drew a {card}");
+            HandValue += card.IntValue;
+            Hand.Add(card);
         }
 
         public void Stand()
         {
-
+            Playing = false;
         }
 
     }
