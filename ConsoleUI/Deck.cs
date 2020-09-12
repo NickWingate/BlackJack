@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BlackJack
 {
-    class Deck
+    public class Deck
     {
         // Fields
         Random rand = new Random();

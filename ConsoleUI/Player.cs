@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ConsoleUI
 {
-    class Player
+    public class Player
     {
         // Fields
         private int _handValue = 0;
@@ -22,25 +22,31 @@ namespace ConsoleUI
             {
                 if (value > 21)
                 {
+                    Playing = false;
                     Bust = true;
-                    Console.WriteLine("Bust! You lose");
+                    Console.WriteLine($"Bust! {Name} loses");
                 }
                 _handValue = value;
             }
         }
-
+        public Card LastDrawnCard { get; set; }
         // Constructors
         public Player(string name)
         {
             Name = name;
         }
+        public Player(Deck deck)
+        {
+            Console.Write("Welcome to blackjack\nPlease enter your name: ");
+            Name = Console.ReadLine();
+            DrawCards(deck);
+        }
 
         // Methods
         public void DrawCards(Deck deck)
         {
-            Hand.Add(deck.DrawCard());
-            Hand.Add(deck.DrawCard());
-            HandValue += Hand[0].IntValue + Hand[1].IntValue;
+            DrawCard(deck);
+            DrawCard(deck);
         }
         public void ViewCards()
         {
@@ -49,12 +55,12 @@ namespace ConsoleUI
                 Console.WriteLine(c.ToString());
             }
         }
-        public void Hit(Deck deck)
+        public void DrawCard(Deck deck)
         {
             Card card = deck.DrawCard();
-            Console.WriteLine($"You drew a {card}");
             HandValue += card.IntValue;
             Hand.Add(card);
+            LastDrawnCard = card;
         }
 
         public void Stand()

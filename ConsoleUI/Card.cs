@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BlackJack
 {
-    class Card
+    public class Card
     {
         // Fields
         private string _stringValue;

@@ -2,8 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Security.Cryptography;
+
+// Following these rules: https://bicyclecards.com/how-to-play/blackjack/
 
 namespace ConsoleUI
 {
@@ -11,41 +14,44 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Welcome to blackjack!");
             Deck d1 = new Deck();
             d1.ShuffleDeck();
 
-            Player p1 = InitPlayer(d1);
+            Player p1 = new Player(d1);
             p1.ViewCards();
 
-            while (!p1.Bust && p1.Playing)
+            Dealer dealer = new Dealer("Keith", d1);
+            while (p1.Playing)
             {
-                //p1.ViewCards();
                 Console.WriteLine($"Hand Value: {p1.HandValue}");
-                HitOrStand(p1, d1);
-
+                NextAction(p1, d1);
             }
-            p1.ViewCards();
-            Console.WriteLine($"{p1.Name}'s Final Hand Value: {p1.HandValue}");
 
+            if (p1.Bust)
+            {
+                Console.WriteLine($"{dealer.Name} Wins!");
+                Environment.Exit(0);
+            }
 
-            Console.WriteLine("End of game");
+            dealer.DealerPlay(d1);
+            if (dealer.Bust)
+            {
+                Console.WriteLine($"{p1.Name} Wins!");
+                Environment.Exit(0);
+            }
+
+            string winner = FindWinner(p1, dealer);
+            if (winner != "Tie")
+            {
+                Console.WriteLine($"{winner} Wins!");
+                Environment.Exit(0);
+            }
+            Console.WriteLine("Tie");
+            
         }
 
-        /// <summary>
-        /// Creates a new Player instance, gets username from user, draws cards.
-        /// </summary>
-        /// <param name="d">Deck to use</param>
-        /// <returns>Player</returns>
-        static Player InitPlayer(Deck d)
-        {
-            Console.Write("Welcome to blackjack\nPlease enter your name: ");
-            string userName = Console.ReadLine();
-            Player p = new Player(userName);
-            p.DrawCards(d);
-            return p;
-        }
-
-        static void HitOrStand(Player p, Deck d)
+        static void NextAction(Player p, Deck d)
         {
             Console.Write("(Hit), (Stand), or (View) Cards?: ");
             string choice = Console.ReadLine().ToLower();
@@ -53,10 +59,10 @@ namespace ConsoleUI
             switch (choice)
             {
                 case "hit":
-                    p.Hit(d);
+                    p.DrawCard(d);
                     break;
                 case "stand":
-                    p.Stand();  // not yet coded
+                    p.Stand();
                     return;
                 case "view":
                     p.ViewCards();
@@ -67,9 +73,20 @@ namespace ConsoleUI
             }
         }
 
-        static Player FindWinner(List<Player> players)
+        static string FindWinner(Player player, Dealer dealer)
         {
-            return players.Max();
+            if (player.HandValue > dealer.HandValue)
+            {
+                return player.Name;
+            }
+            else if (dealer.HandValue > player.HandValue)
+            {
+                return dealer.Name;
+            }
+            else
+            {
+                return "Tie";
+            }
         }
     }
 }
