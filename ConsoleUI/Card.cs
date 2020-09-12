@@ -8,7 +8,8 @@ namespace BlackJack
     class Card
     {
         // Fields
-        private string _value;
+        private string _stringValue;
+        private int _intValue;
         private string _suit;
         private readonly string[] possibleSuits = { "Spades", "Hearts", "Diamonds", "Clubs" };
 
@@ -28,37 +29,43 @@ namespace BlackJack
                 }
             }
         }
-        public string Value
+        public string StringValue
         {
-            get { return _value; }
+            get { return _stringValue; }
             set
             {
                 switch (value)
                 {
                     case "1":
-                        _value = "Ace";
+                        _stringValue = "Ace";
+                        _intValue = 11;
                         break;
                     case "11":
-                        _value = "Jack";
+                        _stringValue = "Jack";
+                        _intValue = 10;
                         break;
                     case "12":
-                        _value = "Queen";
+                        _stringValue = "Queen";
+                        _intValue = 10;
                         break;
                     case "13":
-                        _value = "King";
+                        _stringValue = "King";
+                        _intValue = 10;
                         break;
                     default:
-                        _value = value;
+                        _stringValue = value;
+                        _intValue = Convert.ToInt32(value);
                         break;
                 }
             }
         }
+        public int IntValue { get { return _intValue; } }
 
         // Constructors
         public Card(string suit, string value)
         {
             this.Suit = suit;
-            this.Value = value;
+            this.StringValue = value;
         }
 
         // Methods
@@ -67,7 +74,7 @@ namespace BlackJack
         /// </summary>
         public override string ToString()
         {
-            return $"{this.Value} of {this.Suit}";
+            return $"{this.StringValue} of {this.Suit}";
         }
     }
 }
