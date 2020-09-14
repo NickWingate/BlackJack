@@ -1,5 +1,4 @@
-﻿using BlackJack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Design;
@@ -19,17 +18,21 @@ namespace ConsoleUI
             d1.ShuffleDeck();
 
             Player p1 = new Player(d1);
-            p1.ViewCards();
 
             Dealer dealer = new Dealer("Keith", d1);
+
+            p1.ViewCards();
+
             while (p1.Playing)
             {
                 Console.WriteLine($"Hand Value: {p1.HandValue}");
                 NextAction(p1, d1);
             }
 
+            // Start seeing who won
             if (p1.Bust)
             {
+                Console.WriteLine($"{p1.Name} Bust!");
                 Console.WriteLine($"{dealer.Name} Wins!");
                 Environment.Exit(0);
             }
@@ -37,6 +40,7 @@ namespace ConsoleUI
             dealer.DealerPlay(d1);
             if (dealer.Bust)
             {
+                Console.WriteLine($"{dealer.Name} Bust!");
                 Console.WriteLine($"{p1.Name} Wins!");
                 Environment.Exit(0);
             }

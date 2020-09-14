@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace BlackJack
+namespace ConsoleUI
 {
     public class Deck
     {
@@ -17,8 +17,9 @@ namespace BlackJack
         // Constructors
         public Deck()
         {
-            foreach (string s in possibleSuits)
+            foreach (Suit s in Enum.GetValues(typeof(Suit)))
             {
+                int staicTestingValue = 1;
                 for (int v = 1; v < 14; v++)
                 {
                     Cards.Add(new Card(s, v.ToString()));

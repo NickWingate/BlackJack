@@ -1,6 +1,6 @@
-﻿using BlackJack;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ConsoleUI
@@ -20,11 +20,15 @@ namespace ConsoleUI
             get { return _handValue; }
             set
             {
-                if (value > 21)
+                if (Hand.Any(c => c.StringValue == "Ace")
+                    && _handValue + 10 <= 21)  // Can I increase the value of an ace from 1 to 10?
                 {
+                    value += 10;
+                }
+                if (value > 21)
+                {                    
                     Playing = false;
                     Bust = true;
-                    Console.WriteLine($"Bust! {Name} loses");
                 }
                 _handValue = value;
             }
@@ -37,7 +41,7 @@ namespace ConsoleUI
         }
         public Player(Deck deck)
         {
-            Console.Write("Welcome to blackjack\nPlease enter your name: ");
+            Console.Write("Please enter your name: ");
             Name = Console.ReadLine();
             DrawCards(deck);
         }
