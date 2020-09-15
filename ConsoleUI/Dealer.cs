@@ -1,16 +1,16 @@
-﻿using BlackJack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace ConsoleUI
 {
-    public class Dealer : Player
+    public class Dealer : User
     {
+        public Card FaceUpCard { get; set; }
         public Dealer(string name, Deck deck) : base("Dealer " + name) 
         {
             DrawCards(deck);
-            Console.WriteLine($"{Name}'s face up card is: {Hand[0]}");
+            FaceUpCard = Hand[0];
         }
 
         public void DealerPlay(Deck deck)

@@ -1,11 +1,11 @@
-﻿using BlackJack;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ConsoleUI
 {
-    public class Player
+    public class User : IPlayers
     {
         // Fields
         private int _handValue = 0;
@@ -20,26 +20,34 @@ namespace ConsoleUI
             get { return _handValue; }
             set
             {
+                if (Hand.Any(c => c.StringValue == "Ace")
+                    && _handValue + 11 <= 21)  // Can I increase the value of an ace from 1 to 10?
+                {
+                    value += 10;
+                }
+
                 if (value > 21)
                 {
                     Playing = false;
                     Bust = true;
-                    Console.WriteLine($"Bust! {Name} loses");
                 }
                 _handValue = value;
             }
         }
         public Card LastDrawnCard { get; set; }
         // Constructors
-        public Player(string name)
+        public User(string name)
         {
             Name = name;
         }
-        public Player(Deck deck)
+        public User(Deck deck)
         {
-            Console.Write("Welcome to blackjack\nPlease enter your name: ");
+            Console.Write("Please enter your name: ");
             Name = Console.ReadLine();
-            DrawCards(deck);
+            //DrawCards(deck);  // commented for testing purposes
+
+            DrawCard(new Card(Suit.Hearts, "10"));
+            DrawCard(new Card(Suit.Hearts, "1"));
         }
 
         // Methods
@@ -48,6 +56,19 @@ namespace ConsoleUI
             DrawCard(deck);
             DrawCard(deck);
         }
+        public void DrawCard(Card c)
+        {
+            HandValue += c.IntValue;
+            Hand.Add(c);
+        }
+        public Card DrawCard(Deck deck)
+        {
+            Card card = deck.DrawCard();
+            HandValue += card.IntValue;
+            Hand.Add(card);
+            LastDrawnCard = card;
+            return card;
+        }
         public void ViewCards()
         {
             foreach (Card c in Hand)
@@ -55,14 +76,6 @@ namespace ConsoleUI
                 Console.WriteLine(c.ToString());
             }
         }
-        public void DrawCard(Deck deck)
-        {
-            Card card = deck.DrawCard();
-            HandValue += card.IntValue;
-            Hand.Add(card);
-            LastDrawnCard = card;
-        }
-
         public void Stand()
         {
             Playing = false;

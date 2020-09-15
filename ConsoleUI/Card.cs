@@ -3,32 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BlackJack
+namespace ConsoleUI
 {
     public class Card
     {
         // Fields
         private string _stringValue;
-        private int _intValue;
-        private string _suit;
-        private readonly string[] possibleSuits = { "Spades", "Hearts", "Diamonds", "Clubs" };
 
         // Properties
-        public string Suit
-        {
-            get { return _suit;  }
-            set 
-            {
-                if (!possibleSuits.Contains(value))
-                {
-                    throw new System.ArgumentException("Invalid Suit");
-                }
-                else
-                {
-                    _suit = value;
-                }
-            }
-        }
+        public Suit Suit { get; set; }
+        public int IntValue { get; private set; }
         public string StringValue
         {
             get { return _stringValue; }
@@ -38,31 +22,30 @@ namespace BlackJack
                 {
                     case "1":
                         _stringValue = "Ace";
-                        _intValue = 11;
+                        IntValue = 1;  // Increase to 11 majority of time in Player.cs
                         break;
                     case "11":
                         _stringValue = "Jack";
-                        _intValue = 10;
+                        IntValue = 10;
                         break;
                     case "12":
                         _stringValue = "Queen";
-                        _intValue = 10;
+                        IntValue = 10;
                         break;
                     case "13":
                         _stringValue = "King";
-                        _intValue = 10;
+                        IntValue = 10;
                         break;
                     default:
                         _stringValue = value;
-                        _intValue = Convert.ToInt32(value);
+                        IntValue = Convert.ToInt32(value);
                         break;
                 }
             }
         }
-        public int IntValue { get { return _intValue; } }
 
         // Constructors
-        public Card(string suit, string value)
+        public Card(Suit suit, string value)
         {
             this.Suit = suit;
             this.StringValue = value;

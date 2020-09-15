@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace BlackJack
+namespace ConsoleUI
 {
     public class Deck
     {
         // Fields
         Random rand = new Random();
-        private readonly string[] possibleSuits = { "Spades", "Hearts", "Diamonds", "Clubs" };
 
         // Properties
         public List<Card> Cards { get; set; } = new List<Card>();
@@ -17,11 +16,12 @@ namespace BlackJack
         // Constructors
         public Deck()
         {
-            foreach (string s in possibleSuits)
+            foreach (Suit s in Enum.GetValues(typeof(Suit)))
             {
+                int staticTestingValue = 1;
                 for (int v = 1; v < 14; v++)
                 {
-                    Cards.Add(new Card(s, v.ToString()));
+                    Cards.Add(new Card(s, staticTestingValue.ToString()));
                 }
             }           
         }
