@@ -14,34 +14,36 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
+            // Initializing game
             Console.WriteLine("Welcome to blackjack!");
-            Deck d1 = new Deck();
-            d1.ShuffleDeck();
+            Deck deck = new Deck();
+            deck.ShuffleDeck();
 
-            Player p1 = new Player(d1);
-            p1.ViewCards();
+            Player player = new Player(deck);
+            player.ViewCards();
 
-            Dealer dealer = new Dealer("Keith", d1);
-            while (p1.Playing)
+            // Game starts
+            Dealer dealer = new Dealer("Keith", deck);
+
+            // Player's turn
+            while (player.Playing)
             {
-                Console.WriteLine($"Hand Value: {p1.HandValue}");
-                NextAction(p1, d1);
+                Console.WriteLine($"Hand Value: {player.HandValue}");
+                NextAction(player, deck);
             }
 
-            if (p1.Bust)
+            // Determine if player is bust
+            if (player.Bust)
             {
                 Console.WriteLine($"{dealer.Name} Wins!");
                 Environment.Exit(0);
             }
 
-            dealer.DealerPlay(d1);
-            if (dealer.Bust)
-            {
-                Console.WriteLine($"{p1.Name} Wins!");
-                Environment.Exit(0);
-            }
+            // Dealer's turn
+            dealer.DealerPlay(deck);
 
-            string winner = FindWinner(p1, dealer);
+            // Determine who won
+            string winner = FindWinner(player, dealer);
             if (winner != "Tie")
             {
                 Console.WriteLine($"{winner} Wins!");
@@ -75,7 +77,7 @@ namespace ConsoleUI
 
         static string FindWinner(Player player, Dealer dealer)
         {
-            if (player.HandValue > dealer.HandValue)
+            if (player.HandValue > dealer.HandValue || dealer.Bust)
             {
                 return player.Name;
             }
