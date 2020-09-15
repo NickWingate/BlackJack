@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using System.Threading;
 
 namespace ConsoleUI
 {
@@ -9,23 +11,26 @@ namespace ConsoleUI
     {
         // Fields
         private int _handValue = 0;
-
+        private List<Card> _hand = new List<Card>();
+        
         // Properties
         public bool Playing { get; set; } = true;
         public bool Bust { get; set; } = false;
         public string Name { get; set; }
-        public List<Card> Hand { get; set; } = new List<Card>();
+        public int AceValueBuffer { get; set; }
+        public List<Card> Hand
+        {
+            get { return _hand; }
+            set
+            {
+                AceValueBuffer = 10 * AcesInHand();
+            }
+        }
         public int HandValue
         {
             get { return _handValue; }
             set
             {
-                if (Hand.Any(c => c.StringValue == "Ace")
-                    && _handValue + 11 <= 21)  // Can I increase the value of an ace from 1 to 10?
-                {
-                    value += 10;
-                }
-
                 if (value > 21)
                 {
                     Playing = false;
@@ -35,15 +40,18 @@ namespace ConsoleUI
             }
         }
         public Card LastDrawnCard { get; set; }
+
         // Constructors
         public User(string name)
         {
             Name = name;
+            Hand = new List<Card>();
         }
         public User(Deck deck)
         {
             Console.Write("Please enter your name: ");
             Name = Console.ReadLine();
+            Hand = new List<Card>();
             //DrawCards(deck);  // commented for testing purposes
 
             DrawCard(new Card(Suit.Hearts, "10"));
@@ -79,6 +87,19 @@ namespace ConsoleUI
         public void Stand()
         {
             Playing = false;
+        }
+
+        public int AcesInHand()
+        {
+            int count = 0;
+            foreach (Card card in Hand)
+            {
+                if (card.StringValue == "Ace")
+                {
+                    count++;
+                }
+            }
+            return count;
         }
 
     }

@@ -21,7 +21,7 @@ namespace ConsoleUI
                 int staticTestingValue = 1;
                 for (int v = 1; v < 14; v++)
                 {
-                    Cards.Add(new Card(s, staticTestingValue.ToString()));
+                    Cards.Add(new Card(s, v.ToString()));
                 }
             }           
         }
