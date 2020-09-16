@@ -12,7 +12,6 @@ namespace ConsoleUI
         bool Playing { get; set; }
 
         Card DrawCard(Deck deck);
-        void DrawCards(Deck deck);
         void Stand();
         void ViewCards();
     }

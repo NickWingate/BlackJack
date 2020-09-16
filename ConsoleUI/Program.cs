@@ -80,7 +80,7 @@ namespace ConsoleUI
             {
                 case "hit":
                     Card drawnCard = p.DrawCard(d);
-                    Console.WriteLine($"{p.Name} drew a {drawnCard.StringValue}");
+                    Console.WriteLine($"{p.Name} drew a {drawnCard.Value}");
                     break;
                 case "stand":
                     p.Stand();

@@ -19,9 +19,9 @@ namespace ConsoleUI
             foreach (Suit s in Enum.GetValues(typeof(Suit)))
             {
                 int staticTestingValue = 1;
-                for (int v = 1; v < 14; v++)
+                foreach (CardValue v in Enum.GetValues(typeof(CardValue)))
                 {
-                    Cards.Add(new Card(s, v.ToString()));
+                    Cards.Add(new Card(s, v));
                 }
             }           
         }

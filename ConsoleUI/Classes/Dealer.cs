@@ -9,7 +9,8 @@ namespace ConsoleUI
         public Card FaceUpCard { get; set; }
         public Dealer(string name, Deck deck) : base("Dealer " + name) 
         {
-            DrawCards(deck);
+            DrawCard(deck);
+            DrawCard(deck);
             FaceUpCard = Hand[0];
         }
 
