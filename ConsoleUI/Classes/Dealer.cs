@@ -16,6 +16,7 @@ namespace ConsoleUI
 
         public void DealerPlay(Deck deck)
         {
+            Program.PrintBanner("Start of dealer play");
             RevealFaceDownCard();
             while (HandValue < 17)
             {
@@ -24,10 +25,10 @@ namespace ConsoleUI
             }
 
             Stand();
-            Console.WriteLine($"{Name} is standing with {Hand.Count} cards");
+            Program.PrintBanner("End of dealer play");
             Console.WriteLine($"{Name}'s final cards are:");
             ViewCards();
-            Console.WriteLine($"With a value of: {HandValue}");
+            Console.WriteLine($"Adding to a total value of: {HandValue}");
         }
         private void RevealFaceDownCard()
         {

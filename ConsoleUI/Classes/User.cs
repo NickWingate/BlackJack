@@ -7,8 +7,6 @@ namespace ConsoleUI
     {
         // Fields
         private int _handValue = 0;
-        private List<Card> _hand = new List<Card>();
-
         // Properties
         public bool Playing { get; set; } = true;
         public bool Bust { get; set; } = false;
@@ -40,13 +38,15 @@ namespace ConsoleUI
         {
             Console.Write("Please enter your name: ");
             Name = Console.ReadLine();
-            //DrawCards(deck);  // commented for testing purposes
+            DrawCard(deck);
+            DrawCard(deck);
 
-            DrawCard(new Card(Suit.Hearts, CardValue.Ten));
-            DrawCard(new Card(Suit.Hearts, CardValue.Ace));
+            //DrawCard(new Card(Suit.Hearts, CardValue.Ten));  // Don't Cheat!
+            //DrawCard(new Card(Suit.Hearts, CardValue.Ace));
         }
 
         // Methods
+        // This method overload is for testing purposes
         public void DrawCard(Card c)
         {
             HandValue += DetermineCardValue(c);
