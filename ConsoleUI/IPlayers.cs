@@ -10,6 +10,7 @@ namespace ConsoleUI
         Card LastDrawnCard { get; set; }
         string Name { get; set; }
         bool Playing { get; set; }
+        bool Blackjack { get; set; }
 
         Card DrawCard(Deck deck);
         void Stand();

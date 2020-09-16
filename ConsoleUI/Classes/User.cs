@@ -21,13 +21,19 @@ namespace ConsoleUI
             {
                 if (value > 21)
                 {
-                    Playing = false;
                     Bust = true;
+                    Playing = false;
+                }
+                else if (value == 21)
+                {
+                    Blackjack = true;
+                    Playing = false;
                 }
                 _handValue = value;
             }
         }
         public Card LastDrawnCard { get; set; }
+        public bool Blackjack { get; set; }
 
         // Constructors
         public User(string name)
@@ -47,6 +53,10 @@ namespace ConsoleUI
 
         // Methods
         // This method overload is for testing purposes
+        public override string ToString()
+        {
+            return this.Name;
+        }
         public void DrawCard(Card c)
         {
             HandValue += DetermineCardValue(c);

@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.Design;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 
 // Following these rules: https://bicyclecards.com/how-to-play/blackjack/
 
@@ -23,9 +19,19 @@ namespace ConsoleUI
                 NextAction(Players[1], deck);
                 PrintBanner();
             }
-
-            Console.WriteLine(FindWinner(Players).Name);
-            
+            if (Players[1].Blackjack)
+            {
+                Console.WriteLine($"Blackjack!!\n{Players[1]} wins!");
+            }
+            else
+            {
+                ((Dealer)Players[0]).DealerPlay(deck);
+                IPlayers winner = FindWinner(Players);
+                if (winner != null)
+                {
+                    Console.WriteLine($"The winner is: {winner}");
+                }
+            }
         }
 
         // Methods
@@ -56,8 +62,8 @@ namespace ConsoleUI
 
             PrintBanner();
 
-            Console.WriteLine($"{Players[0].Name}'s face up card is {((Dealer)Players[0]).FaceUpCard}");
-            Console.WriteLine($"{Players[1].Name} drew:");
+            Console.WriteLine($"{Players[0]}'s face up card is {((Dealer)Players[0]).FaceUpCard}");
+            Console.WriteLine($"{Players[1]} drew:");
 
             Players[1].ViewCards();
             PrintBanner();
@@ -74,7 +80,7 @@ namespace ConsoleUI
             {
                 case "hit":
                     Card drawnCard = p.DrawCard(d);
-                    Console.WriteLine($"{p.Name} drew a {drawnCard}");
+                    Console.WriteLine($"{p} drew a {drawnCard}");
                     break;
                 case "stand":
                     p.Stand();
@@ -90,6 +96,11 @@ namespace ConsoleUI
 
         static IPlayers FindWinner(List<IPlayers> players)
         {
+            if (CheckForTie(players))
+            {
+                Console.WriteLine("Tie");
+                return null;
+            }
             try
             {
                 var winner = players
@@ -103,6 +114,16 @@ namespace ConsoleUI
             {
                 return players[0];
             }           
+        }
+        static bool CheckForTie(List<IPlayers> players)
+        {
+            switch (players[0].HandValue == players[1].HandValue)
+            {
+                case true:
+                    return true;
+                case false:
+                    return false;
+            }
         }
     }
 }
