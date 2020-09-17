@@ -12,8 +12,9 @@ namespace ConsoleUI
         bool Playing { get; set; }
         bool Blackjack { get; set; }
 
-        Card DrawCard(Deck deck);
+        Card DrawCard(Deck deck, int amount = 1);
         void Stand();
         void ViewCards();
+        void ResetHand();
     }
 }

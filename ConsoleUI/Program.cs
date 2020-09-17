@@ -16,7 +16,12 @@ namespace ConsoleUI
             while (Players[1].Playing)
             {
                 Console.WriteLine($"Hand Value: {Players[1].HandValue}");
-                NextAction(Players[1], deck);
+                Card drawnCard = NextAction(Players[1], deck);
+                Console.WriteLine($"{Players[1]} drew a {drawnCard}");
+                if (Players[1].Bust)
+                {
+                    Console.WriteLine($"{Players[1]} is bust!");
+                }
                 PrintBanner();
             }
             if (Players[1].Blackjack)
@@ -30,6 +35,10 @@ namespace ConsoleUI
                 if (winner != null)
                 {
                     Console.WriteLine($"The winner is: {winner}");
+                }
+                else
+                {
+                    Console.WriteLine("Tie");
                 }
             }
         }
@@ -58,7 +67,8 @@ namespace ConsoleUI
             deck.ShuffleDeck();
 
             Players.Add(new Dealer("Keith", deck));  // Dealer is always [0] player
-            Players.Add(new User(deck));
+            Players.Add(new User());
+            Players[1].DrawCard(deck, 2);
 
             PrintBanner();
 
@@ -71,7 +81,7 @@ namespace ConsoleUI
             return (deck, Players);
         }
 
-        static void NextAction(IPlayers p, Deck d)
+        static Card NextAction(IPlayers p, Deck d)
         {
             Console.Write("(Hit), (Stand), or (View) Cards?: ");
             string choice = Console.ReadLine().ToLower();
@@ -80,17 +90,16 @@ namespace ConsoleUI
             {
                 case "hit":
                     Card drawnCard = p.DrawCard(d);
-                    Console.WriteLine($"{p} drew a {drawnCard}");
-                    break;
+                    return drawnCard;
                 case "stand":
                     p.Stand();
-                    return;
+                    return null;
                 case "view":
                     p.ViewCards();
-                    return;
+                    return null;
                 default:
                     Console.WriteLine("Invalid choice");
-                    break;
+                    return null;
             }
         }
 
@@ -98,7 +107,6 @@ namespace ConsoleUI
         {
             if (CheckForTie(players))
             {
-                Console.WriteLine("Tie");
                 return null;
             }
             try

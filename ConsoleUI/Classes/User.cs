@@ -11,7 +11,6 @@ namespace ConsoleUI
         public bool Playing { get; set; } = true;
         public bool Bust { get; set; } = false;
         public string Name { get; set; }
-        public int AceValueBuffer { get; set; }
         public List<Card> Hand { get; set; } = new List<Card>();
 
         public int HandValue
@@ -40,35 +39,36 @@ namespace ConsoleUI
         {
             Name = name;
         }
-        public User(Deck deck)
+        public User()
         {
             Console.Write("Please enter your name: ");
             Name = Console.ReadLine();
-            DrawCard(deck);
-            DrawCard(deck);
 
             //DrawCard(new Card(Suit.Hearts, CardValue.Ten));  // Don't Cheat!
             //DrawCard(new Card(Suit.Hearts, CardValue.Ace));
         }
 
         // Methods
-        // This method overload is for testing purposes
         public override string ToString()
         {
             return this.Name;
         }
+        // This method is for testing purposes
         public void DrawCard(Card c)
         {
             HandValue += DetermineCardValue(c);
             Hand.Add(c);
         }
-        public Card DrawCard(Deck deck)
+        public Card DrawCard(Deck deck, int amount = 1)
         {
-            Card card = deck.DrawCard();
-            HandValue += DetermineCardValue(card);
-            Hand.Add(card);
-            LastDrawnCard = card;
-            return card;
+            for (int i = 0; i < amount; i++)
+            {
+                Card card = deck.DrawCard();
+                HandValue += DetermineCardValue(card);
+                Hand.Add(card);
+                LastDrawnCard = card;
+            }
+            return LastDrawnCard;
         }
         public void ViewCards()
         {
@@ -99,7 +99,11 @@ namespace ConsoleUI
         {
             Playing = false;
         }
-
-
+        public void ResetHand()
+        {
+            Hand.Clear();
+            HandValue = 0;
+            LastDrawnCard = null;
+        }
     }
 }
