@@ -101,6 +101,9 @@ namespace ConsoleUI
         }
         public void ResetHand()
         {
+            Playing = true;
+            Bust = false;
+            Blackjack = false;
             Hand.Clear();
             HandValue = 0;
             LastDrawnCard = null;

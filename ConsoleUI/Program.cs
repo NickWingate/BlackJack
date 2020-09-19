@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http.Headers;
 
 // Following these rules: https://bicyclecards.com/how-to-play/blackjack/
 
@@ -9,37 +11,54 @@ namespace ConsoleUI
     class Program
     {
         // Main
-        static void Main(string[] args)
+        static void Main()
         {
             (Deck deck, List<IPlayers> Players) = InitGame();
-            StartGame(Players, deck);
-            while (Players[1].Playing)
+            for (int i = 0; i < 2; i++)
             {
-                Console.WriteLine($"Hand Value: {Players[1].HandValue}");
-                Card drawnCard = NextAction(Players[1], deck);
-                Console.WriteLine($"{Players[1]} drew a {drawnCard}");
-                if (Players[1].Bust)
+                StartGame(Players, deck);
+                while (Players[1].Playing)
                 {
-                    Console.WriteLine($"{Players[1]} is bust!");
+                    Console.WriteLine($"Hand Value: {Players[1].HandValue}");
+                    NextAction(Players[1], deck);
+                    if (Players[1].Bust)
+                    {
+                        Console.WriteLine($"{Players[1]} is bust!");
+                    }
+                    PrintBanner();
                 }
-                PrintBanner();
-            }
-            if (Players[1].Blackjack)
-            {
-                Console.WriteLine($"Blackjack!!\n{Players[1]} wins!");
-            }
-            else
-            {
-                ((Dealer)Players[0]).DealerPlay(deck);
-                IPlayers winner = FindWinner(Players);
-                if (winner != null)
+                if (Players[1].Blackjack)
                 {
-                    Console.WriteLine($"The winner is: {winner}");
+                    Console.WriteLine($"Blackjack!!\n{Players[1]} wins!");
                 }
                 else
                 {
-                    Console.WriteLine("Tie");
+                    ((Dealer)Players[0]).DealerPlay(deck);
+                    IPlayers winner = FindWinner(Players);
+                    if (winner != null)
+                    {
+                        Console.WriteLine($"The winner is: {winner}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Tie");
+                    }
                 }
+                foreach (IPlayers player in Players)
+                {
+                    player.ResetHand();
+                }
+                switch (PlayAgain())
+                {
+                    case true:
+                        break;
+                    case false:
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        break;
+                }
+                Console.Clear();
             }
         }
 
@@ -84,9 +103,24 @@ namespace ConsoleUI
             Players[1].ViewCards();
             PrintBanner();
         }
-
+        static bool? PlayAgain()
+        {
+            Console.WriteLine("Play Again?(y/n)");
+            string response = Console.ReadLine().ToLower();
+            switch (response)
+            {
+                case "y":
+                    return true;
+                case "n":
+                    return false;
+                default:
+                    Console.WriteLine("Invalid answer");
+                    return null;
+            }
+        }
         static Card NextAction(IPlayers p, Deck d)
         {
+            PrintBanner("Action");
             Console.Write("(Hit), (Stand), or (View) Cards?: ");
             string choice = Console.ReadLine().ToLower();
 
@@ -94,6 +128,7 @@ namespace ConsoleUI
             {
                 case "hit":
                     Card drawnCard = p.DrawCard(d);
+                    Console.WriteLine($"{p} drew a {drawnCard}");
                     return drawnCard;
                 case "stand":
                     p.Stand();
