@@ -6,13 +6,9 @@ namespace ConsoleUI
 {
     public class Dealer : User
     {
-        public Card FaceUpCard { get; set; }
+        public Card FaceUpCard => Hand[0];
         public Dealer(string name, Deck deck) : base("Dealer " + name) 
-        {
-            DrawCard(deck);
-            DrawCard(deck);
-            FaceUpCard = Hand[0];
-        }
+        {}
 
         public void DealerPlay(Deck deck)
         {

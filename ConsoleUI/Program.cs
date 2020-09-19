@@ -12,7 +12,7 @@ namespace ConsoleUI
         static void Main(string[] args)
         {
             (Deck deck, List<IPlayers> Players) = InitGame();
-
+            StartGame(Players, deck);
             while (Players[1].Playing)
             {
                 Console.WriteLine($"Hand Value: {Players[1].HandValue}");
@@ -68,6 +68,12 @@ namespace ConsoleUI
 
             Players.Add(new Dealer("Keith", deck));  // Dealer is always [0] player
             Players.Add(new User());
+
+            return (deck, Players);
+        }
+        static void StartGame(List<IPlayers> Players, Deck deck)
+        {
+            Players[0].DrawCard(deck, 2);
             Players[1].DrawCard(deck, 2);
 
             PrintBanner();
@@ -77,8 +83,6 @@ namespace ConsoleUI
 
             Players[1].ViewCards();
             PrintBanner();
-
-            return (deck, Players);
         }
 
         static Card NextAction(IPlayers p, Deck d)
