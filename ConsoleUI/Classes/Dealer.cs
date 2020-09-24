@@ -6,8 +6,10 @@ namespace ConsoleUI
     {
         public Card FaceUpCard => Hand[0];
 
-        public Dealer(string name, Deck deck) : base("Dealer " + name)
-        { }
+        public Dealer(string name)
+        {
+            this.Name = name;
+        }
 
         public void DealerPlay(Deck deck)
         {

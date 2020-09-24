@@ -72,8 +72,9 @@ namespace ConsoleUI
             Deck deck = new Deck();
             deck.ShuffleDeck();
 
-            Players.Add(new Dealer("Keith", deck));  // Dealer is always [0] player
-            Players.Add(new User());
+            Players.Add(new Dealer("Keith"));  // Dealer is always [0] player
+            Console.Write("Name: ");
+            Players.Add(new User(Console.ReadLine()));
 
             return (deck, Players);
         }
