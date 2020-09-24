@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace ConsoleUI
 {
     public class Deck
     {
         // Fields
-        Random rand = new Random();
+        private Random rand = new Random();
 
         // Properties
         public List<Card> Cards { get; set; } = new List<Card>();
@@ -23,7 +21,7 @@ namespace ConsoleUI
                 {
                     Cards.Add(new Card(s, v));
                 }
-            }           
+            }
         }
 
         // Methods
@@ -43,7 +41,7 @@ namespace ConsoleUI
         /// </summary>
         public void ShuffleDeck()
         {
-            for (int n = Cards.Count -1; n > 0; n--)
+            for (int n = Cards.Count - 1; n > 0; n--)
             {
                 int r = rand.Next(n + 1);
                 Card temp = Cards[n];
@@ -51,6 +49,7 @@ namespace ConsoleUI
                 Cards[r] = temp;
             }
         }
+
         public Card DrawCard()
         {
             if (Cards.Count > 0)

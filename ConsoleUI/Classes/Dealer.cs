@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ConsoleUI
 {
-    public class Dealer : User
+    public class Dealer : Member
     {
         public Card FaceUpCard => Hand[0];
-        public Dealer(string name, Deck deck) : base("Dealer " + name) 
-        {}
+
+        public Dealer(string name, Deck deck) : base("Dealer " + name)
+        { }
 
         public void DealerPlay(Deck deck)
         {
@@ -20,12 +19,13 @@ namespace ConsoleUI
                 Console.WriteLine($"{Name} hit, they drew {LastDrawnCard}");
             }
 
-            Stand();
+            Playing = false;
             Program.PrintBanner("End of dealer play");
             Console.WriteLine($"{Name}'s final cards are:");
-            ViewCards();
+            ConsoleWriteCards();
             Console.WriteLine($"Adding to a total value of: {HandValue}");
         }
+
         private void RevealFaceDownCard()
         {
             Console.WriteLine($"{Name}'s face down card was: {Hand[1]}");
