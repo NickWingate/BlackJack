@@ -17,32 +17,36 @@ namespace ConsoleUI
             {
                 StartRound(players, deck);
 
-                while (players[1].Playing)
+                while (players[1].Status == Status.Playing)
                 {
                     Console.WriteLine($"Hand Value: {players[1].HandValue}");
                     NextAction(players[1], deck);
-                    if (players[1].Bust)
-                    {
+                }
+                switch (players[1].Status)
+                {
+                    case Status.Bust:
                         Console.WriteLine($"{players[1]} is bust!");
-                    }
-                    PrintBanner();
-                }
-                if (players[1].Blackjack)
-                {
-                    Console.WriteLine($"Blackjack!!\n{players[1]} wins!");
-                }
-                else
-                {
-                    ((Dealer)players[0]).DealerPlay(deck);
-                    Member winner = FindWinner(players);
-                    if (winner != null)
-                    {
-                        Console.WriteLine($"The winner is: {winner}");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Tie");
-                    }
+                        break;
+                    case Status.Blackjack:
+                        Console.WriteLine($"Blackjack!!\n{players[1]} wins!");
+                        break;
+                    case Status.Standing:
+                        {
+                            ((Dealer)players[0]).DealerPlay(deck);
+                            Member winner = FindWinner(players);
+                            switch (winner)
+                            {
+                                case null:
+                                    Console.WriteLine("Tie");
+                                    break;
+                                default:
+                                    Console.WriteLine($"The winner is: {winner}");
+                                    break;
+                            }
+                        }
+                        break;
+                    default:
+                        break;
                 }
                 AskNewRound(players);
             }
@@ -99,19 +103,22 @@ namespace ConsoleUI
             {
                 player.ResetHand();
             }
-            switch (PlayAgain())
+            bool? response = null;  // may be able to make this more efficient
+            while (response == null)
             {
-                case true:
-                    break;
-
-                case false:
-                    Environment.Exit(0);
-                    break;
-
-                default:
-                    break;
+                response = PlayAgain();
+                switch (response)
+                {
+                    case true:
+                        break;
+                    case false:
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        break;
+                }
             }
-            Console.Clear();
+            //Console.Clear();
         }
 
         private static bool? PlayAgain()
@@ -146,7 +153,7 @@ namespace ConsoleUI
                     return drawnCard;
 
                 case "stand":
-                    p.Playing = false;
+                    p.Stand();
                     return null;
 
                 case "view":
@@ -168,13 +175,13 @@ namespace ConsoleUI
             try
             {
                 var winner = players
-                .Where(x => !x.Bust)
-                .OrderByDescending(x => x.HandValue)
-                .First();
+                    .Where(x => x.Status != Status.Bust)
+                    .OrderByDescending(x => x.HandValue)
+                    .First();
 
                 return winner;
             }
-            catch (InvalidOperationException)  // This is when calling .First() doesnt work
+            catch (InvalidOperationException)  // This is when calling .First() doesnt work i.e where both bust
             {
                 return players[0];
             }

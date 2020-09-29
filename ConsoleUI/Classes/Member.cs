@@ -6,11 +6,6 @@ namespace ConsoleUI
     public abstract class Member
     {
         private int _handValue = 0;
-
-        // Blackjack, Bust, and Playing are all similar properties...
-        public bool Blackjack { get; protected set; } = false;
-
-        public bool Bust { get; protected set; } = false;
         public List<Card> Hand { get; protected set; } = new List<Card>();
 
         public int HandValue
@@ -20,13 +15,11 @@ namespace ConsoleUI
             {
                 if (value > 21)
                 {
-                    Bust = true;
-                    Playing = false;
+                    Status = Status.Bust;
                 }
                 else if (value == 21)
                 {
-                    Blackjack = true;
-                    Playing = false;
+                    Status = Status.Blackjack;
                 }
                 else
                 {
@@ -37,8 +30,8 @@ namespace ConsoleUI
 
         public Card LastDrawnCard { get; protected set; }
         public string Name { get; set; }
-        public bool Playing { get; set; } = false;  // maybe private set
         public int Score { get; set; } = 0; // maybe private set
+        public Status Status { get; protected set; }
 
         public Card DrawCard(Deck deck, int amount = 1)
         {
@@ -54,9 +47,7 @@ namespace ConsoleUI
 
         public void ResetHand()
         {
-            Playing = true;
-            Bust = false;
-            Blackjack = false;
+            Status = Status.Playing;
             Hand.Clear();
             HandValue = 0;
             LastDrawnCard = null;
@@ -73,6 +64,11 @@ namespace ConsoleUI
         public override string ToString()
         {
             return this.Name;
+        }
+
+        public void Stand()
+        {
+            Status = Status.Standing;
         }
 
         private int DetermineCardValue(Card card)
