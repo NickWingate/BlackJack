@@ -8,6 +8,6 @@ Features to add:
 - Splitting pairs
 - Betting system
 - Doubling Down
-- Play more than 1 round
-
+- Improve playing another round feature
+- Dealer immediately 
 

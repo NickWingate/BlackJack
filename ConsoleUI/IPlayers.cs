@@ -4,6 +4,7 @@ namespace ConsoleUI
 {
     public interface IPlayers
     {
+        public int Score { get; set; }
         bool Bust { get; set; }
         List<Card> Hand { get; set; }
         int HandValue { get; set; }
@@ -13,8 +14,11 @@ namespace ConsoleUI
         bool Blackjack { get; set; }
 
         Card DrawCard(Deck deck, int amount = 1);
+
         void Stand();
-        void ViewCards();
+
+        void ConsoleWriteCards();
+
         void ResetHand();
     }
 }

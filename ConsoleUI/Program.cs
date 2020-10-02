@@ -6,45 +6,65 @@ using System.Linq;
 
 namespace ConsoleUI
 {
-    class Program
+    internal class Program
     {
         // Main
-        static void Main(string[] args)
+        private static void Main()
         {
-            (Deck deck, List<IPlayers> Players) = InitGame();
-            StartGame(Players, deck);
-            while (Players[1].Playing)
+            (Deck deck, List<Member> players) = InitGame();
+
+            while (true)
             {
-                Console.WriteLine($"Hand Value: {Players[1].HandValue}");
-                Card drawnCard = NextAction(Players[1], deck);
-                Console.WriteLine($"{Players[1]} drew a {drawnCard}");
-                if (Players[1].Bust)
+                StartRound(players, deck);
+
+                while (players[1].Status == Status.Playing)
                 {
-                    Console.WriteLine($"{Players[1]} is bust!");
+                    Console.WriteLine($"Hand Value: {players[1].HandValue}");
+                    NextAction(players[1], deck);
                 }
-                PrintBanner();
-            }
-            if (Players[1].Blackjack)
-            {
-                Console.WriteLine($"Blackjack!!\n{Players[1]} wins!");
-            }
-            else
-            {
-                ((Dealer)Players[0]).DealerPlay(deck);
-                IPlayers winner = FindWinner(Players);
-                if (winner != null)
+                switch (players[1].Status)
                 {
-                    Console.WriteLine($"The winner is: {winner}");
+                    case Status.Bust:
+                        Console.WriteLine($"{players[1]} is bust!");
+                        break;
+                    case Status.Blackjack:
+                        Console.WriteLine($"Blackjack!!\n{players[1]} wins!");
+                        break;
+                    case Status.Standing:
+                        {
+                            Status dealerResult = ((Dealer)players[0]).DealerPlay(deck);
+                            switch (dealerResult)
+                            {
+                                case Status.Bust:
+                                    Console.WriteLine($"{players[0]} is bust!");
+                                    break;
+                                case Status.Blackjack:
+                                    Console.WriteLine($"Blackjack!!\n{players[0]} wins!");
+                                    break;
+                                default:
+                                    Member winner = FindWinner(players);
+                                    switch (winner)
+                                    {
+                                        case null:
+                                            Console.WriteLine("Tie");
+                                            break;
+                                        default:
+                                            Console.WriteLine($"The winner is: {winner}");
+                                            break;
+                                    }
+                                    break;
+                            }
+                        }
+                        break;
+                    default:
+                        break;
                 }
-                else
-                {
-                    Console.WriteLine("Tie");
-                }
+                AskNewRound(players);
             }
         }
 
         // Methods
-        
+
         /// <summary>
         /// Prints a pretty banner with a (nearly) consistant length
         /// </summary>
@@ -56,22 +76,25 @@ namespace ConsoleUI
             Console.Write(title.ToUpper());
             Console.WriteLine(string.Join("", Enumerable.Repeat("-", 25 - buffer)));
         }
-        static (Deck, List<IPlayers>) InitGame()
+
+        private static (Deck, List<Member>) InitGame()
         {
             PrintBanner("Start");
             Console.WriteLine("Welcome to blackjack!");
-            
-            List<IPlayers> Players = new List<IPlayers>();
+
+            List<Member> Players = new List<Member>();
 
             Deck deck = new Deck();
             deck.ShuffleDeck();
 
-            Players.Add(new Dealer("Keith", deck));  // Dealer is always [0] player
-            Players.Add(new User());
+            Players.Add(new Dealer("Keith"));  // Dealer is always [0] player
+            Console.Write("Name: ");
+            Players.Add(new User(Console.ReadLine()));
 
             return (deck, Players);
         }
-        static void StartGame(List<IPlayers> Players, Deck deck)
+
+        private static void StartRound(List<Member> Players, Deck deck)
         {
             Players[0].DrawCard(deck, 2);
             Players[1].DrawCard(deck, 2);
@@ -81,12 +104,55 @@ namespace ConsoleUI
             Console.WriteLine($"{Players[0]}'s face up card is {((Dealer)Players[0]).FaceUpCard}");
             Console.WriteLine($"{Players[1]} drew:");
 
-            Players[1].ViewCards();
+            Players[1].ConsoleWriteCards();
             PrintBanner();
         }
 
-        static Card NextAction(IPlayers p, Deck d)
+        private static void AskNewRound(List<Member> players)
         {
+            foreach (Member player in players)
+            {
+                player.ResetHand();
+            }
+            bool? response = null;  // may be able to make this more efficient
+            while (response == null)
+            {
+                response = PlayAgain();
+                switch (response)
+                {
+                    case true:
+                        break;
+                    case false:
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            //Console.Clear();
+        }
+
+        private static bool? PlayAgain()
+        {
+            Console.WriteLine("Play Again?(y/n)");
+            string response = Console.ReadLine().ToLower();
+            switch (response)
+            {
+                case "y":
+                    return true;
+
+                case "n":
+                    return false;
+
+                default:
+                    Console.WriteLine("Invalid answer");
+                    return null;
+            }
+        }
+
+        private static Card NextAction(Member p, Deck d)
+        {
+            PrintBanner("Action");
             Console.Write("(Hit), (Stand), or (View) Cards?: ");
             string choice = Console.ReadLine().ToLower();
 
@@ -94,20 +160,24 @@ namespace ConsoleUI
             {
                 case "hit":
                     Card drawnCard = p.DrawCard(d);
+                    Console.WriteLine($"{p} drew a {drawnCard}");
                     return drawnCard;
+
                 case "stand":
                     p.Stand();
                     return null;
+
                 case "view":
-                    p.ViewCards();
+                    p.ConsoleWriteCards();
                     return null;
+
                 default:
                     Console.WriteLine("Invalid choice");
                     return null;
             }
         }
 
-        static IPlayers FindWinner(List<IPlayers> players)
+        private static Member FindWinner(List<Member> players)
         {
             if (CheckForTie(players))
             {
@@ -116,23 +186,25 @@ namespace ConsoleUI
             try
             {
                 var winner = players
-                .Where(x => !x.Bust)
-                .OrderByDescending(x => x.HandValue)
-                .First();
+                    .Where(x => x.Status != Status.Bust)
+                    .OrderByDescending(x => x.HandValue)
+                    .First();
 
                 return winner;
             }
-            catch (InvalidOperationException)  // This is when calling .First() doesnt work
+            catch (InvalidOperationException)  // This is when calling .First() doesnt work i.e where both bust
             {
                 return players[0];
-            }           
+            }
         }
-        static bool CheckForTie(List<IPlayers> players)
+
+        private static bool CheckForTie(List<Member> players)
         {
             switch (players[0].HandValue == players[1].HandValue)
             {
                 case true:
                     return true;
+
                 case false:
                     return false;
             }
