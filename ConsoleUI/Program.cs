@@ -32,15 +32,26 @@ namespace ConsoleUI
                         break;
                     case Status.Standing:
                         {
-                            ((Dealer)players[0]).DealerPlay(deck);
-                            Member winner = FindWinner(players);
-                            switch (winner)
+                            Status dealerResult = ((Dealer)players[0]).DealerPlay(deck);
+                            switch (dealerResult)
                             {
-                                case null:
-                                    Console.WriteLine("Tie");
+                                case Status.Bust:
+                                    Console.WriteLine($"{players[0]} is bust!");
+                                    break;
+                                case Status.Blackjack:
+                                    Console.WriteLine($"Blackjack!!\n{players[0]} wins!");
                                     break;
                                 default:
-                                    Console.WriteLine($"The winner is: {winner}");
+                                    Member winner = FindWinner(players);
+                                    switch (winner)
+                                    {
+                                        case null:
+                                            Console.WriteLine("Tie");
+                                            break;
+                                        default:
+                                            Console.WriteLine($"The winner is: {winner}");
+                                            break;
+                                    }
                                     break;
                             }
                         }

@@ -11,21 +11,21 @@ namespace ConsoleUI
             this.Name = name;
         }
 
-        public void DealerPlay(Deck deck)
+        public Status DealerPlay(Deck deck)
         {
             Program.PrintBanner("Start of dealer play");
             RevealFaceDownCard();
-            while (HandValue < 17)
+            while (Status == Status.Playing && HandValue < 17)
             {
                 DrawCard(deck);
                 Console.WriteLine($"{Name} hit, they drew {LastDrawnCard}");
             }
-
-            Playing = false;
-            Program.PrintBanner("End of dealer play");
-            Console.WriteLine($"{Name}'s final cards are:");
-            ConsoleWriteCards();
-            Console.WriteLine($"Adding to a total value of: {HandValue}");
+            return Status;
+            //Status = Status.Standing;
+            //Program.PrintBanner("End of dealer play");
+            //Console.WriteLine($"{Name}'s final cards are:");
+            //ConsoleWriteCards();
+            //Console.WriteLine($"Adding to a total value of: {HandValue}");
         }
 
         private void RevealFaceDownCard()
